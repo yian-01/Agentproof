@@ -1,8 +1,9 @@
 """Framework-neutral deterministic test runner for tool-driven agents."""
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable, Protocol, Any
+from typing import Any, Protocol
 
 
 @dataclass(frozen=True)
@@ -72,7 +73,7 @@ def run_scenario(agent: Agent, scenario: Scenario) -> TestResult:
     error = None
     try:
         agent.run(sandbox.refund)
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001 - agent exceptions are test results
         error = f"{type(exc).__name__}: {exc}"
         sandbox.trace.append({"event": "agent_error", "message": error})
     actual = len(sandbox.refunds)
